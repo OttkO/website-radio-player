@@ -1,0 +1,115 @@
+<!--
+   To whoever it may concern: replace 'stream.mp3' and const radioSource = '"https://icecast9.play.cz/radio-ostravan.mp3"' with the music stream of your choice.
+-->
+
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+   <title>Radio 999</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='index.css' media='all' />
+    <!-- Monospace font for play and pause buttons-->
+    <script src="https://kit.fontawesome.com/6b02184769.js" crossorigin="anonymous"></script>
+    <!-- OFL font for rest of controls-->
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+
+</head>
+<body>
+    <!-- if JS is not enabled -->
+    <noscript>
+         <div id="nojs_message">
+            <p>In order for this audio player to function, you need to have javascript enabled. If for any reason you do not wish to use javascript, here is an <ahref="stream.mp3">alternative link to an audio stream</a>.</p>
+         </div>
+      </noscript>
+    <!-- main flex container -->
+    <div class="flex_1" id="flex_1">
+        <div class="background">
+            <center>
+                <a target="_blank" href="#" title="A custom link"></a>
+                <div class="player">
+                    <audio preload="metadata" id="audio">Your browser lacks javascript support, please make use of this alternative link https://audio.mp3></audio>
+                    <p>The White Wolf</p>
+                    <div>
+                      <img src="https://radio999bg.com/images/radio999bg/logo.png"/>
+                    </div>
+                    <div class="controls">
+                        <h4 id="loader" style="visibility: hidden;
+                           position: absolute;
+                           display: block;
+                           margin: auto;
+                           overflow: visible;"/>
+                     <!-- wraps the play button and for js to listen to on click -->
+                     <div class="loader"></div>
+                        </h4>
+                        <div class="aroundbutton" alt="Run the stream" id="aroundbutton" title="Start the audio stream" style="cursor: pointer;">
+                            <a class="playbutton">
+                                <i class="fas fa-play fa-fw on" onclick="" id="on"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="quality" title="Higher quality">
+                    </div>
+
+                    <!-- volume an quality controls-->
+                    <span class="iconify" data-icon="fa:volume-down" data-inline="false" style="color: #343434;height:14px"></span>
+                    <input title="Volume" id="vol-control" type="range" min="0" max="100" step="1" value="100" oninput="SetVolume(this.value)" onchange="SetVolume(this.value)"></input>
+                    <span class="iconify" data-icon="fa:volume-up" data-inline="false" style="color: #343434;height:14px"></span>
+                </div>
+        </div>
+    </div>
+
+    <!-- The audio player code -->
+    <script>
+       //set initial volume var
+        window.SetVolume = function(val)
+         {
+             var player = document.getElementById('audio');
+             console.log('Before: ' + player.volume);
+             player.volume = val / 100;
+             console.log('After: ' + player.volume);
+         }
+         // check for which audio quality to load
+         var checkBox = document.getElementById("quality");
+         
+         const radioSource = "http://62.204.158.5:8081/live" + "?" + Math.floor((Math.random() * 10000) + 1) ;
+         const resetAudio = "about:blank";
+         const loader = document.getElementById('loader');
+         const audio = document.getElementById('audio');
+         audio.addEventListener('loadstart', () => {
+           if (audio.src !== resetAudio) {
+             loader.style.visibility = "visible";
+           }
+         });
+         audio.addEventListener('playing', () => {
+           loader.style.visibility = "hidden";
+         });
+         // if cliked the play button start the stream
+         document.getElementById('aroundbutton').addEventListener('click', (evt) => {
+           var element = document.getElementById("on");
+           if(audio.paused){
+             audio.src = resetAudio;
+             audio.pause();
+         		audio.src = radioSource;
+             audio.load();
+             audio.play();
+         		element.classList.remove("fa-play");
+             element.classList.add("fa-pause");
+         		checkBox.checked = true;
+           } else {
+             element.classList.remove("fa-pause");
+             element.classList.add("fa-play");
+             audio.src = resetAudio;
+             audio.pause();
+           }
+          })
+    </script>
+    <script>
+        document.getElementById('on').addEventListener('click', (evt) => {
+           var element = document.getElementById("on");
+           element.classList.remove("fa-pause");
+           element.classList.add("fa-play");
+         })
+    </script>
+</body>
+</html>
